@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sensing.core.dao.IJobsChannelDAO">
+	<resultMap id="resultMap" type="com.sensing.core.bean.JobsChannel">
+		<id column="uuid" property="uuid" />
+		<id column="job_uuid" property="jobUuid" />
+		<id column="channel_uuid" property="channelUuid" />
+		<id column="create_user" property="createUser" />
+		<id column="create_time" property="createTime" />
+		<id column="modify_user" property="modifyUser" />
+		<id column="modify_time" property="modifyTime" />
+	</resultMap>
+	<sql id="column_list">
+		uuid,job_uuid,channel_uuid,create_user,create_time,modify_user,modify_time
+	</sql>
+	<insert id="saveJobsChannel">
+	   insert into jobs_channel(uuid,job_uuid,channel_uuid,create_user,create_time,modify_user,modify_time)
+	   values(
+		   #{uuid},#{jobUuid},#{channelUuid},#{createUser},#{createTime},#{modifyUser},#{modifyTime}
+	   )
+	</insert>
+    <insert id="saveJobsChannelBetch"  >
+        insert into jobs_channel(uuid,job_uuid,channel_uuid,create_user,create_time)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.uuid},#{item.jobUuid},#{item.channelUuid},#{item.createUser},now()
+            )
+        </foreach>
+
+    </insert>
+	<select id="getJobsChannel" resultMap="resultMap">
+		select
+		<include refid="column_list" />
+		from jobs_channel
+		where uuid = #{uuid}
+	</select>
+	<delete id="removeJobsChannel">
+		delete from jobs_channel
+		where uuid = #{uuid}
+	</delete>
+	<delete id="removeJobsChannelByJobUuid">
+		delete from jobs_channel
+		where jobUuid = #{uuid}
+	</delete>
+	<update id="updateJobsChannel">
+	   update jobs_channel set job_uuid=#{jobUuid},channel_uuid=#{channelUuid},create_user=#{createUser},create_time=#{createTime},modify_user=#{modifyUser},modify_time=#{modifyTime}
+	   where uuid=#{uuid}
+	</update>
+	<select id="queryList" resultMap="resultMap">
+		select
+		<include refid="column_list" />
+		from jobs_channel
+		<where>
+			<if test="f.jobUuid != null and f.jobUuid != '' ">
+				and job_uuid like CONCAT('%',#{f.jobUuid},'%')
+			</if>
+			<if test="f.channelUuid != null and f.channelUuid != '' ">
+				and channel_uuid like CONCAT('%',#{f.channelUuid},'%')
+			</if>
+		</where>
+		<if test="pageFlag != null and pageFlag == 'pageFlag'">
+			LIMIT #{beginCount},#{pageRows}
+		</if>
+	</select>
+	<select id="selectCount" resultType="int">
+		select
+		count(uuid)
+		from jobs_channel
+		<where>
+			<if test="f.jobUuid != null and f.jobUuid != '' ">
+				and job_uuid like CONCAT('%',#{f.jobUuid},'%')
+			</if>
+			<if test="f.channelUuid != null and f.channelUuid != '' ">
+				and channel_uuid like CONCAT('%',#{f.channelUuid},'%')
+			</if>
+		</where>
+	</select>
+</mapper>

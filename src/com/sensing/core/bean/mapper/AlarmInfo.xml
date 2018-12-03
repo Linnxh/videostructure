@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 告警数据保存 -->
+<mapper namespace="com.sensing.core.dao.IAlarmInfoSaveDAO">
+	
+	<!-- 保存抓拍表 -->
+	<insert id="saveCapture">
+	   insert ignore capture(uuid,device_id,identity_id,cap_type,cap_time,cap_img_url,device_area)
+	   values(
+		   #{uuid},#{deviceId},#{identityId},#{capType},#{capTime},#{capImgUrl},#{deviceArea}
+	   )
+	</insert>
+	
+	<!-- 保存告警和抓拍的关联关系 -->	
+	<insert id="saveAlarmCmpLogs">
+	   insert into alarm_cmp_logs(uuid,alarm_uuid,cmp_uuid,cap_uuid,scene_url)
+	   values(
+		   #{uuid},#{alarmUuid},#{cmpUuid},#{capUuid},#{sceneUrl}
+	   )
+	</insert>
+	
+	<!-- 保存告警信息 -->	
+	<insert id="saveAlarm">
+	   insert into alarm(uuid,device_id,alarm_time,cap_time,cap_uuid,cmp_uuid,cmp_templatedb_id,cmp_obj_uuid,cmp_score,job_uuid,state)
+	   values(
+		   #{uuid},#{deviceId},#{alarmTime},#{capTime},#{capUuid},#{cmpUuid},#{cmpTemplatedbId},#{cmpObjUuid},#{cmpScore},#{jobUuid},#{state}
+	   )
+	</insert>
+	
+</mapper>

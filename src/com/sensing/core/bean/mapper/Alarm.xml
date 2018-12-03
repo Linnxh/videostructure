@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sensing.core.dao.IAlarmDAO">
+	<resultMap id="resultMap" type="com.sensing.core.bean.Alarm">
+		<id column="uuid" property="uuid" />
+		<id column="device_id" property="deviceId" />
+		<id column="alarm_time" property="alarmTime" />
+		<id column="cap_time" property="capTime" />
+		<id column="cap_uuid" property="capUuid" />
+		<id column="cmp_uuid" property="cmpUuid" />
+		<id column="cmp_templatedb_id" property="cmpTemplatedbId" />
+		<id column="cmp_obj_uuid" property="cmpObjUuid" />
+		<id column="cmp_score" property="cmpScore" />
+		<id column="job_uuid" property="jobUuid" />
+	</resultMap>
+	<sql id="column_list">
+		uuid,device_id,alarm_time,cap_time,cap_uuid,cmp_uuid,cmp_templatedb_id,cmp_obj_uuid,cmp_score,job_uuid
+	</sql>
+	<insert id="saveAlarm">
+	   insert into alarm(uuid,device_id,alarm_time,cap_time,cap_uuid,cmp_uuid,cmp_templatedb_id,cmp_obj_uuid,cmp_score,job_uuid)
+	   values(
+		   #{uuid},#{deviceId},#{alarmTime},#{capTime},#{capUuid},#{cmpUuid},#{cmpTemplatedbId},#{cmpObjUuid},#{cmpScore},#{jobUuid}
+	   )
+	</insert>
+	<select id="getAlarm" resultMap="resultMap">
+		select
+		<include refid="column_list" />
+		from alarm
+		where id = #{id}
+	</select>
+	<delete id="removeAlarm">
+		delete from alarm
+		where id = #{id}
+	</delete>
+	<update id="updateAlarm">
+	   update alarm set device_id=#{deviceId},alarm_time=#{alarmTime},cap_time=#{capTime},cap_uuid=#{capUuid},cmp_uuid=#{cmpUuid},cmp_templatedb_id=#{cmpTemplatedbId},cmp_obj_uuid=#{cmpObjUuid},cmp_score=#{cmpScore},job_uuid=#{jobUuid}
+	   where id=#{id}
+	</update>
+	<select id="queryList" resultMap="resultMap">
+		select
+		<include refid="column_list" />
+		from alarm
+		<where>
+		</where>
+		<if test="pageFlag != null and pageFlag == 'pageFlag'">
+			LIMIT #{beginCount},#{pageRows}
+		</if>
+	</select>
+	<select id="selectCount" resultType="int">
+		select
+		count(id)
+		from alarm
+		<where>
+		</where>
+	</select>
+</mapper>

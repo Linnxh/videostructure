@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sensing.core.dao.IDataInitDAO">
+
+	<!-- 通道和任务的关联信息 -->
+	<select id="queryChannelJobMap" resultType="java.util.HashMap">
+		SELECT
+			jc.channel_uuid deviceUuid,group_concat(jc.job_uuid) as jobUuids
+		FROM
+			jobs_channel jc
+		GROUP BY jc.channel_uuid
+	</select>
+	
+	<!-- 任务和模板库的关联关系 -->
+	<select id="queryJobTemplateDbMap" resultType="java.util.HashMap">
+		SELECT
+			jt.job_uuid as jobUuid,GROUP_CONCAT(jt.templatedb_id) templateDbIds
+		FROM
+			jobs_templatedb jt,
+			template_db t
+		WHERE
+			jt.templatedb_id = t.id
+			and t.is_used = 1 
+			and t.is_deleted = 0
+		GROUP BY 
+			jt.job_uuid
+	</select>	
+	
+	<resultMap id="resultMap" type="com.sensing.core.alarm.JobBean">
+		<id column="uuid" property="uuid" />
+		<id column="state" property="state" />
+		<id column="beginTime" property="beginTime" />
+		<id column="endTime" property="endTime" />
+		<id column="beginDate" property="beginDate" />
+		<id column="endDate" property="endDate" />
+		<id column="score" property="score" />
+		<id column="runWeek" property="runWeek" />
+	</resultMap>
+	
+	<!-- 任务缓存 -->
+	<select id="queryJobMap" resultMap="resultMap">
+		SELECT
+			j.uuid uuid,
+			j.state state,
+			j.begin_time beginTime,
+			j.end_time endTime,
+			j.begin_date beginDate,
+			j.end_date endDate,
+			j.score score,
+			j.run_week runWeek
+		FROM  
+			jobs j
+		WHERE
+			j.state IN (10, 20, 40)
+	</select>
+	
+	<select id="queryTemplateDbList" resultType="java.util.HashMap" >
+		SELECT DISTINCT
+			db.id id
+		FROM
+			template_db db,
+			jobs_templatedb jt
+		WHERE
+			jt.templatedb_id = db.id
+		AND db.is_deleted = 0
+		AND db.is_used = 1;
+	</select>
+		
+	
+</mapper>

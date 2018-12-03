@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>lxh 测试界面 </title>
+
+</head>
+<body>
+
+<script src="./js/jquery-1.8.0.min.js"></script>
+<script src="http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://cdn.bootcss.com/sockjs-client/1.1.1/sockjs.js"></script>
+
+<script>
+
+
+    var user= {"f":{"capType":1,"channelUuid":"f02f0e035a5f40c8bc65bc9f6593e3b7"},"pageRows":9,"pageNo":1};
+    $.ajax({
+        url : "http://localhost:8080/videostructure/task/query",
+        type : "POST",
+        async : true,
+        contentType: "application/json; charset=utf-8",
+        data : JSON.stringify(user),
+        dataType : 'json',
+        success : function(data) {
+        }
+    });
+
+</script>
+
+</body>
+</html>
